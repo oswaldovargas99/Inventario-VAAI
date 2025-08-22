@@ -29,7 +29,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        // Campos personalizados
         'codigo',
         'puesto',
         'telefono',
@@ -76,7 +75,6 @@ class User extends Authenticatable
      */
     public function dependencia()
     {
-        // Ajusta el namespace si tu modelo está en otra ruta
         return $this->belongsTo(\App\Models\Inventarios\Dependencia::class, 'dependencia_id');
     }
 }

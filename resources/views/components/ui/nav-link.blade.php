@@ -1,11 +1,17 @@
-@props(['active' => false, 'href' => '#'])
+@props(['active' => false])
 
 @php
-$classes = $active
-    ? 'flex items-center px-3 py-2 rounded-xl text-sm font-medium bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
-    : 'flex items-center px-3 py-2 rounded-xl text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700';
+$classes = 'flex items-center px-3 py-2 rounded-xl transition '.
+    ($active
+        ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300'
+        : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700');
 @endphp
 
-<a {{ $attributes->merge(['href' => $href, 'class' => $classes]) }}>
-    {{ $slot }}
+<a {{ $attributes->merge([
+        'class' => $classes,
+        'wire:navigate' => true,          // ← SPA
+        'wire:navigate.hover' => true,    // ← prefetch al pasar el mouse
+    ]) }}>
+  {{ $slot }}
 </a>
+

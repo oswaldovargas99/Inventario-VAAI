@@ -1,7 +1,28 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-[x-cloak] {
-    display: none;
+[x-cloak]{ display:none !important; }
+
+@layer base {
+  .dark input[type='text'],
+  .dark input[type='email'],
+  .dark input[type='password'],
+  .dark input[type='tel'],
+  .dark input[type='number'],
+  .dark select,
+  .dark textarea {
+    @apply bg-gray-800 border-gray-600 text-gray-100 placeholder-gray-400;
+  }
+
+  .dark input:focus,
+  .dark select:focus,
+  .dark textarea:focus {
+    @apply ring-2 ring-indigo-500 border-indigo-500;
+  }
+
+  .dark option {
+    @apply bg-gray-800 text-gray-100;
+  }
 }

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Models\Inventarios;
 
 use Illuminate\Database\Eloquent\Model;
@@ -8,9 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Dependencia extends Model
 {
     protected $table = 'inventarios_dependencias';
+    protected $fillable = ['nombre','siglas','telefono','direccion'];
 
-    protected $fillable = [
-        'nombre','siglas','telefono','direccion',
-        'colonia','municipio','estado','pais',
-    ];
+    public function users()
+    {
+        return $this->hasMany(\App\Models\User::class, 'dependencia_id');
+    }
 }
