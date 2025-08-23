@@ -55,10 +55,7 @@
     </table>
   </div>
   <div class="mt-4">
-    {{-- Opcional: muestra datos para verificar --}}
-    <div class="text-xs text-gray-500 dark:text-gray-400 mb-2">
-        Total: {{ $users->total() }} · Por página: {{ $users->perPage() }} · Página: {{ $users->currentPage() }}/{{ $users->lastPage() }}
-    </div>
+
 
     {{ $users->onEachSide(1)->links('pagination::tailwind') }}
 </div>
