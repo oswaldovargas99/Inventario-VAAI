@@ -5,8 +5,10 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DependenciaController;
 use App\Models\User;
+use App\Http\Controllers\Admin\EquipoController;
+use App\Http\Controllers\Admin\InventarioGeneralController;
 
-Route::get('/', fn () => auth()->check() ? redirect()->route('inicio') : view('welcome'))->name('home');
+Route::get('/', fn () => Auth::check() ? redirect()->route('inicio') : view('welcome'))->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
@@ -41,6 +43,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('dependencias', DependenciaController::class)->except(['show']);
     });
 
+    Route::middleware(['auth'])->group(function () {
+        Route::prefix('admin')->name('admin.')->middleware(['role:Admin|Aprobador|Secretario'])->group(function () {
+        Route::resource('equipos', EquipoController::class)->except(['show']);
+        });
+    });
+
     // ===== Dashboard GENERAL (solo Aprobador/VoBo, NO usuarios) =====
     Route::middleware(['permission:aprobar movimientos|vobo movimientos'])->group(function () {
         Route::view('/panel', 'dashboard')->name('panel'); // usa misma vista de dashboard
@@ -50,6 +58,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['permission:aprobar movimientos|vobo movimientos'])->group(function () {
         Route::view('/inventario-general', 'inventario.general')->name('inventario.general');
     });
+
+Route::middleware(['permission:aprobar movimientos|vobo movimientos|role:Admin'])->group(function () {
+    Route::get('/inventario-general', [InventarioGeneralController::class, 'index'])
+        ->name('inventario.general');
+});
+
 
     // ===== Aprobador =====
     Route::middleware(['permission:aprobar movimientos'])->group(function () {

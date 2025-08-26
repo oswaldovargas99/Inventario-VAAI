@@ -21,6 +21,19 @@
         </a>
       </li>
 
+      {{-- ===== Equipos ===== --}}
+      @canany(['equipos.view','equipos.create','equipos.update','equipos.delete'])
+        <li>
+          <a href="{{ route('admin.equipos.index') }}"
+            class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700
+            {{ request()->routeIs('admin.equipos.*') ? 'bg-gray-100 dark:bg-gray-700 font-semibold' : '' }}">
+            🖥️ Equipos
+          </a>
+        </li>
+      @endcanany
+
+
+      
       <li>
         <a href="{{ route('inventario.general') }}"
            class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700
