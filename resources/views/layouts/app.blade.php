@@ -39,5 +39,15 @@
         @stack('modals')
         @livewireScripts
         @livewireNavigateScripts
+
+        @if(session('success'))
+            <div
+                x-data="{ show: true }"
+                x-show="show"
+                x-init="setTimeout(() => show = false, 5000)" {{-- Duración más razonable (5 segundos) --}}
+                class="fixed top-4 right-4 z-50 px-4 py-2 bg-green-600 text-white rounded-lg shadow-lg">
+                {{ session('success') }}
+            </div>
+        @endif
     </body>
 </html>

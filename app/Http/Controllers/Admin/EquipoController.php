@@ -14,15 +14,16 @@ use Throwable;
 
 class EquipoController extends Controller
 {
-    // Middleware aplicado desde routes/web.php (Admin|Aprobador|Secretario)
 
     public function index(Request $request)
     {
+        // Lógica para obtener los filtros del request
         $q   = trim((string) $request->get('q', ''));
         $dep = $request->get('dependencia_id');
         $tip = $request->get('tipo_equipo_id');
         $est = $request->get('estado');
 
+        // Lógica para obtener los equipos filtrados
         $equipos = Equipo::query()
             ->with(['dependencia','tipo'])
             ->when($q, function($qq) use ($q) {
@@ -41,12 +42,14 @@ class EquipoController extends Controller
             ->paginate(15)
             ->withQueryString();
 
+        // Lógica para obtener los estados, dependencias y tipos
         /** @var array<int,string> $estados */
         $estados = ['En Almacén','Asignado','En Préstamo','En Mantenimiento','Baja'];
 
         $dependencias = Dependencia::orderBy('nombre')->get(['id','nombre']);
         $tipos        = TipoEquipo::orderBy('nombre')->get(['id','nombre']);
 
+        // ¡CORRECCIÓN CLAVE! Pasa todas las variables a la vista 'inventario.general'
         return view('admin.equipos.index', compact('equipos','dependencias','tipos','estados','q','dep','tip','est'));
     }
 
@@ -57,8 +60,8 @@ class EquipoController extends Controller
 
         $dependencias = Dependencia::orderBy('nombre')->get(['id','nombre']);
         $tipos        = TipoEquipo::orderBy('nombre')->get(['id','nombre']);
-
-        return view('admin.equipos.create', compact('dependencias','tipos','estados'));
+        $equipo = new \App\Models\Inventarios\Equipo();
+        return view('admin.equipos.create', compact('dependencias','tipos','estados', 'equipo'));
     }
 
     public function store(EquipoRequest $request)
@@ -71,9 +74,10 @@ class EquipoController extends Controller
                 'user_id'   => optional(Auth::user())->getAuthIdentifier(),
             ]);
 
-            return redirect()
-                ->route('admin.equipos.index')
-                ->with('success','Equipo registrado correctamente.');
+            session()->flash('success', '✅ Equipo agregado con éxito.');
+            //dd(session()->all(), 'Después de flash en store - EquipoController');
+            // Redirige siempre a inventario.general después de crear
+            return redirect()->route('inventario.general');
         } catch (Throwable $e) {
             Log::error('Error al crear equipo', [
                 'error'   => $e->getMessage(),
@@ -82,16 +86,8 @@ class EquipoController extends Controller
                 'user_id' => optional(Auth::user())->getAuthIdentifier(),
             ]);
 
-            return back()
-                ->withInput()
-                ->with('error','Ocurrió un error al registrar el equipo. Revisa los datos e inténtalo de nuevo.');
+            return back()->withInput()->with('error','Ocurrió un error al registrar el equipo.');
         }
-
-        $target = $request->string('return') === 'inventario.general'
-            ? route('inventario.general')
-            : route('admin.equipos.index');
-
-        return redirect()->to($target)->with('success','Equipo registrado correctamente.');
     }
 
     public function edit(Equipo $equipo)
@@ -115,9 +111,10 @@ class EquipoController extends Controller
                 'user_id'   => optional(Auth::user())->getAuthIdentifier(),
             ]);
 
-            return redirect()
-                ->route('admin.equipos.index')
-                ->with('success','Equipo actualizado.');
+            session()->flash('success', '✅ Equipo actualizado con éxito.'); // Usar flash explícitamente
+            //dd(session()->all(), 'Después de flash en update - EquipoController');
+            // Redirige siempre a inventario.general después de actualizar
+            return redirect()->route('inventario.general');
         } catch (Throwable $e) {
             Log::error('Error al actualizar equipo', [
                 'equipo_id' => $equipo->getKey(),
@@ -127,26 +124,13 @@ class EquipoController extends Controller
                 'user_id'   => optional(Auth::user())->getAuthIdentifier(),
             ]);
 
-            return back()
-                ->withInput()
-                ->with('error','No se pudo actualizar el equipo. Intenta de nuevo.');
+            return back()->withInput()->with('error','No se pudo actualizar el equipo.');
         }
-
-        $target = $request->string('return') === 'inventario.general'
-            ? route('inventario.general')
-            : route('admin.equipos.index');
-
-        return redirect()->to($target)->with('success','Equipo actualizado.');
     }
 
-    public function destroy(Equipo $equipo)
+    public function destroy(Request $request, Equipo $equipo)
     {
         try {
-            // Placeholder Fase 5: bloqueo por movimientos "activos"
-            // if ($equipo->movimientos()->whereIn('estado_aprobacion',['Pendiente','Aprobado_Patrimonio'])->exists()) {
-            //     return back()->with('error','No es posible eliminar: el equipo tiene movimientos activos.');
-            // }
-
             $equipo->delete();
 
             Log::warning('Equipo eliminado (soft)', [
@@ -154,9 +138,9 @@ class EquipoController extends Controller
                 'user_id'   => optional(Auth::user())->getAuthIdentifier(),
             ]);
 
-            return redirect()
-                ->route('admin.equipos.index')
-                ->with('success','Equipo eliminado.');
+            session()->flash('success', '✅ Equipo eliminado.'); // Usar flash explícitamente
+            //dd(session()->all(), 'Después de flash en destroy - EquipoController');
+            return redirect()->route('inventario.general');
         } catch (Throwable $e) {
             Log::error('Error al eliminar equipo', [
                 'equipo_id' => $equipo->getKey(),

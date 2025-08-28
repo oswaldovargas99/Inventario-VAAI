@@ -27,18 +27,17 @@
           <a href="{{ route('admin.equipos.index') }}"
             class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700
             {{ request()->routeIs('admin.equipos.*') ? 'bg-gray-100 dark:bg-gray-700 font-semibold' : '' }}">
-            🖥️ Equipos
+            🖥️ Equipos (Admin) {{-- Renombrado para diferenciar --}}
           </a>
         </li>
       @endcanany
 
 
-      
       <li>
         <a href="{{ route('inventario.general') }}"
            class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700
            {{ request()->routeIs('inventario.general') ? 'bg-gray-100 dark:bg-gray-700 font-semibold' : '' }}">
-          📦 Inventario
+          📦 Inventario General
         </a>
       </li>
 
@@ -73,7 +72,7 @@
           <a href="{{ route('inventario.general') }}"
              class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700
              {{ request()->routeIs('inventario.general') ? 'bg-gray-100 dark:bg-gray-700 font-semibold' : '' }}">
-            📦 Inventario
+            📦 Inventario General
           </a>
         </li>
         <li>
@@ -100,7 +99,7 @@
           <a href="{{ route('inventario.general') }}"
              class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700
              {{ request()->routeIs('inventario.general') ? 'bg-gray-100 dark:bg-gray-700 font-semibold' : '' }}">
-            📦 Inventario
+            📦 Inventario General
           </a>
         </li>
         <li>

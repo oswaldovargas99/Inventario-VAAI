@@ -137,11 +137,10 @@
   </div>
 
 </div>
-
+  {{-- Eliminamos el input hidden 'return' ya que el controlador siempre redirige a inventario.general --}}
   @php
-    $cancelTo = request('return') === 'inventario.general'
-        ? route('inventario.general')
-        : route('admin.equipos.index');
+    // La variable $cancelTo ya no necesita considerar 'return' si siempre se redirige a inventario.general
+    $cancelTo = route('inventario.general');
   @endphp
 
   <div class="mt-6 flex justify-end gap-2">
@@ -153,4 +152,3 @@
       {{ $submitText ?? 'Guardar' }}
     </button>
 </div>
-
