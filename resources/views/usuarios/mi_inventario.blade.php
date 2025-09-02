@@ -1,5 +1,5 @@
 {{-- resources/views/usuarios/mi_inventario.blade.php --}}
-<x-layouts.inventario>
+<x-app-layout>
     <x-slot:headerTitle>Mi Inventario</x-slot:headerTitle>
 
     <x-slot:breadcrumbs>
@@ -41,4 +41,4 @@
     <p class="text-sm text-gray-500 dark:text-gray-400 mt-3">
         *Ejemplo para Usuario. En fases posteriores se filtrará automáticamente por <code>user_id</code>.
     </p>
-</x-layouts.inventario>
+</x-app-layout>

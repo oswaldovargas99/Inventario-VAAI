@@ -12,6 +12,17 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
 
+use Illuminate\Routing\Attributes\Middleware;
+
+#[Middleware('auth')]
+#[Middleware('verified')]
+#[Middleware('role:Admin|Aprobador|Secretario')]
+#[Middleware('permission:equipos.view', only: ['index'])]
+#[Middleware('permission:equipos.create', only: ['create','store'])]
+#[Middleware('permission:equipos.edit', only: ['edit','update'])]
+#[Middleware('permission:equipos.delete', only: ['destroy'])]
+
+
 class EquipoController extends Controller
 {
 
@@ -77,7 +88,7 @@ class EquipoController extends Controller
             session()->flash('success', '✅ Equipo agregado con éxito.');
             //dd(session()->all(), 'Después de flash en store - EquipoController');
             // Redirige siempre a inventario.general después de crear
-            return redirect()->route('inventario.general');
+            return redirect()->route('admin.equipos.index');
         } catch (Throwable $e) {
             Log::error('Error al crear equipo', [
                 'error'   => $e->getMessage(),
@@ -114,7 +125,7 @@ class EquipoController extends Controller
             session()->flash('success', '✅ Equipo actualizado con éxito.'); // Usar flash explícitamente
             //dd(session()->all(), 'Después de flash en update - EquipoController');
             // Redirige siempre a inventario.general después de actualizar
-            return redirect()->route('inventario.general');
+            return redirect()->route('admin.equipos.index');
         } catch (Throwable $e) {
             Log::error('Error al actualizar equipo', [
                 'equipo_id' => $equipo->getKey(),
@@ -140,7 +151,7 @@ class EquipoController extends Controller
 
             session()->flash('success', '✅ Equipo eliminado.'); // Usar flash explícitamente
             //dd(session()->all(), 'Después de flash en destroy - EquipoController');
-            return redirect()->route('inventario.general');
+            return redirect()->route('admin.equipos.index');
         } catch (Throwable $e) {
             Log::error('Error al eliminar equipo', [
                 'equipo_id' => $equipo->getKey(),

@@ -1,24 +1,24 @@
-{{-- resources/views/admin/equipos/index.blade.php --}}
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                {{ __('Inventario — Equipos (Administración)') }} {{-- Renombrado para diferenciar --}}
-            </h2>
-            @can('create', App\Models\Inventarios\Equipo::class)
-                {{-- Eliminamos el parámetro 'return' --}}
-                <a href="{{ route('admin.equipos.create') }}"
-                   class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
-                    + Nuevo Equipo
-                </a>
-            @endcan
-        </div>
-    </x-slot>
+{{-- resources/views/inventario/general.blade.php --}}
+<x-app-layout> {{-- Ahora extiende x-app-layout directamente --}}
+  <x-slot name="header">
+    <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        {{ __('Inventario General') }} {{-- Puedes usar el headerTitle aquí si lo necesitas --}}
+    </h2>
+  </x-slot>
 
-    <div class="py-6">
-        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8 space-y-4">
-            {{-- Incluimos el nuevo partial de listado --}}
-            @include('equipos._list_content', compact('equipos','dependencias','tipos','estados','q','dep','tip','est'))
-        </div>
-    </div>
+  <x-ui.section-title
+    title="Inventario General"
+    subtitle="Listado global de equipos registrados en el sistema"
+  />
+  <div class="flex items-center justify-between mb-4">
+    <div></div>
+    @can('equipos.create')
+      <a href="{{ route('admin.equipos.create') }}"
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700">
+        + Registrar un equipo
+      </a>
+    @endcan
+  </div>
+  {{-- Incluimos el partial de listado de equipos --}}
+  @include('admin.equipos._list_content', compact('equipos','dependencias','tipos','estados','q','dep','tip','est'))
 </x-app-layout>

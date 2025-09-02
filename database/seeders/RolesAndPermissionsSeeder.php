@@ -30,8 +30,13 @@ class RolesAndPermissionsSeeder extends Seeder
         $permsEquipos = [
             'equipos.view',
             'equipos.create',
-            'equipos.update',
+            'equipos.edit',
             'equipos.delete',
+            'movimientos.view',
+            'movimientos.create',
+            'movimientos.edit',
+            'movimientos.delete',
+            'movimientos.approve',
         ];
 
         // Crea/asegura todos los permisos
@@ -62,6 +67,12 @@ class RolesAndPermissionsSeeder extends Seeder
             'equipos.view',
             'equipos.create',
             'equipos.update',
+            
+            'movimientos.view',
+            'movimientos.create',
+            'movimientos.edit',
+            'movimientos.delete',
+            'movimientos.approve'
         ]);
 
         $secretario->syncPermissions([
@@ -72,6 +83,12 @@ class RolesAndPermissionsSeeder extends Seeder
             'equipos.view',
             'equipos.create',
             'equipos.update',
+
+            'movimientos.view',
+            'movimientos.create',
+            'movimientos.edit',
+            'movimientos.delete',
+            'movimientos.approve'
         ]);
 
         $admin->syncPermissions([
@@ -87,13 +104,19 @@ class RolesAndPermissionsSeeder extends Seeder
             'equipos.create',
             'equipos.update',
             'equipos.delete',
+
+            'movimientos.view',
+            'movimientos.create',
+            'movimientos.edit',
+            'movimientos.delete',
+            'movimientos.approve'
         ]);
 
         // Usuario Admin inicial (idempotente)
-        if (!User::where('email', 'admin@udg.test')->exists()) {
+        if (!User::where('email', 'admin@udg.com')->exists()) {
             $adminUser = User::create([
                 'name'     => 'Administrador',
-                'email'    => 'admin@udg.test',
+                'email'    => 'admin@udg.com',
                 'password' => bcrypt('julioC123'),
             ]);
             $adminUser->assignRole('Admin');

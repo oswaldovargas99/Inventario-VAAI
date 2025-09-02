@@ -45,6 +45,6 @@ class InventarioGeneralController extends Controller
         $tipos        = TipoEquipo::orderBy('nombre')->get(['id','nombre']);
 
         // Pasa todas las variables a la vista 'inventario.general'
-        return view('inventario.general', compact('equipos','dependencias','tipos','estados','q','dep','tip','est'));
+        return view('admin.equipos.index', compact('equipos','dependencias','tipos','estados','q','dep','tip','est'));
     }
 }

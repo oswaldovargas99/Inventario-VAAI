@@ -6,7 +6,9 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DependenciaController;
 use App\Models\User;
 use App\Http\Controllers\Admin\EquipoController;
-use App\Http\Controllers\Admin\InventarioGeneralController; // Asegúrate de que este use esté bien
+use App\Http\Controllers\Admin\InventarioGeneralController; // Este controlador ahora solo redirige
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\MovimientoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,33 +52,56 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware(['role:Admin'])
         ->name('dashboard');
 
-    // ===== Rutas de Administración (solo para usuarios con rol Admin) =====
-    Route::middleware(['role:Admin'])->prefix('admin')->name('admin.')->group(function () {
-        Route::view('/dashboard', 'dashboard')->name('dashboard'); // Vista de dashboard para Admin
-
-        Route::resource('users', UserController::class)->except(['show']); // Gestión de usuarios
-        Route::resource('dependencias', DependenciaController::class)->except(['show']); // Gestión de dependencias
-    });
-
-    // ===== Gestión de Equipos (para Admin, Aprobador, Secretario) =====
-    // Aquí el prefijo 'admin' se usa para la URL, pero el nombre de la ruta es 'admin.equipos.*'
-    // Se ha corregido el `EquipoController@index` para que retorne `admin.equipos.index`
+    // ===== Rutas de ADMINISTRACIÓN GENERAL (para Admin, Aprobador, Secretario) =====
+    // Este es el grupo principal que consolidará todas las rutas de 'admin'.
     Route::prefix('admin')->name('admin.')->middleware(['role:Admin|Aprobador|Secretario'])->group(function () {
+
+        // Rutas específicas para el rol 'Admin'
+        Route::get('/dashboard', [DashboardController::class, 'adminIndex'])->name('dashboard')
+            ->middleware(['role:Admin']);
+        Route::resource('users', UserController::class)->except(['show'])
+            ->middleware(['role:Admin']);
+        Route::resource('dependencias', DependenciaController::class)->except(['show'])
+            ->middleware(['role:Admin']);
+
+        // ===== Gestión de Equipos (CONSOLIDADA) =====
+        // La vista principal de equipos será ahora 'admin.equipos.index'.
         Route::resource('equipos', EquipoController::class)->except(['show']);
+
+        // ===== Gestión de Movimientos (CONSOLIDADA) =====
+        Route::resource('movimientos', MovimientoController::class)
+            ->except(['show'])
+            ->middleware([
+                'index'   => 'permission:movimientos.view',
+                'create'  => 'permission:movimientos.create',
+                'store'   => 'permission:movimientos.create',
+                'edit'    => 'permission:movimientos.edit',
+                'update'  => 'permission:movimientos.edit',
+                'destroy' => 'permission:movimientos.delete',
+            ]);
+
+        // Acciones de flujo de aprobación (específicas para Movimientos)
+        Route::post('movimientos/{movimiento}/aprobar-patrimonio', [MovimientoController::class, 'aprobarPatrimonio'])
+            ->middleware('permission:movimientos.approve')
+            ->name('movimientos.aprobarPatrimonio');
+
+        Route::post('movimientos/{movimiento}/aprobar-secretaria', [MovimientoController::class, 'aprobarSecretaria'])
+            ->middleware('permission:movimientos.approve')
+            ->name('movimientos.aprobarSecretaria');
+
+        Route::post('movimientos/{movimiento}/rechazar', [MovimientoController::class, 'rechazar'])
+            ->middleware('permission:movimientos.approve')
+            ->name('movimientos.rechazar');
     });
 
 
     // ===== Dashboard GENERAL (para Aprobador o VoBo, NO usuarios generales sin esos permisos) =====
     Route::middleware(['permission:aprobar movimientos|vobo movimientos'])->group(function () {
-        Route::view('/panel', 'dashboard')->name('panel'); // Usa la misma vista 'dashboard'
+        Route::get('/panel', [DashboardController::class, 'panelIndex'])->name('panel');
     });
 
-    // ===== Inventario General (para Admin, Aprobador o VoBo) =====
-    // Esta es la ÚNICA definición para 'inventario.general' y apunta al controlador correcto
-    // que se encarga de pasar los datos a la vista.
-    // IMPORTANTE: Este middleware requiere que el usuario tenga el rol 'Admin'
-    // o los permisos 'aprobar movimientos' o 'vobo movimientos' para acceder.
-    // Si solo quieres que cualquier usuario autenticado acceda, cambia el middleware a `['auth']`.
+    // ===== Inventario General (Ahora redirige a admin.equipos.index) =====
+    // Esta ruta ya no renderiza una vista directamente, sino que redirige al listado principal de equipos.
     Route::middleware(['permission:aprobar movimientos|vobo movimientos|role:Admin'])->group(function () {
         Route::get('/inventario-general', [InventarioGeneralController::class, 'index'])
             ->name('inventario.general');

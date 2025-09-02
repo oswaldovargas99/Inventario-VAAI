@@ -34,6 +34,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => $PermissionMiddlewareClass,
             'role_or_permission' => $RoleOrPermissionMiddlewareClass,
         ]);
+
+        // Si tienes otros grupos de middleware personalizados, revisa también su orden.
+
     })
     ->withProviders([
         App\Providers\AppServiceProvider::class,
