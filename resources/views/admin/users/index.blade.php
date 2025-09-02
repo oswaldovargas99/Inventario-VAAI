@@ -21,7 +21,7 @@
     @endif
   
 
-    <x-ui.section-title title="Usuarios" subtitle="Administración de cuentas del sistema" />
+    {{-- <x-ui.section-title title="Usuarios" subtitle="Administración de cuentas del sistema" /> --}}
 
     <div class="flex items-center justify-between mb-4">
         <div></div>

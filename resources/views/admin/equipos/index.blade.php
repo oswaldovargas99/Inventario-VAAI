@@ -6,10 +6,14 @@
     </h2>
   </x-slot>
 
+  {{--
   <x-ui.section-title
     title="Inventario General"
     subtitle="Listado global de equipos registrados en el sistema"
   />
+  --}}
+
+  
   <div class="flex items-center justify-between mb-4">
     <div></div>
     @can('equipos.create')

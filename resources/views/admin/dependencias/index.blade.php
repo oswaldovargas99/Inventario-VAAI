@@ -6,7 +6,7 @@
     </h2>
   </x-slot>
 
-    <x-ui.section-title title="Dependencias" subtitle="Catálogo de áreas/centros" />
+    {{--<x-ui.section-title title="Dependencias" subtitle="Catálogo de áreas/centros" />--}}
 
     @if(session('success'))
       <div class="mb-3 p-3 rounded bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">

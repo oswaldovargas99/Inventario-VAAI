@@ -6,11 +6,12 @@
     </h2>
   </x-slot>
 
+  {{--
   <x-ui.section-title
     title="Movimientos de equipo"
     subtitle="Listado global de moivimientos de equipos registrados en el sistema"
   />
-
+    --}}
   <div class="py-6 max-w-7xl mx-auto sm:px-6 lg:px-8">
     <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-4">
 
