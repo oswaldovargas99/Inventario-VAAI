@@ -26,32 +26,33 @@ class MovimientoObserver
 
                 case MovimientoTipo::Asignacion:
                     $equipo->estado = 'Asignado';
-                    if (schema_has_column('inventarios_equipos', 'usuario_asignado_id')) {
-                        $equipo->usuario_asignado_id = $mov->usuario_asignado_id;
-                    }
-                    if ($mov->dependencia_destino_id && schema_has_column('inventarios_equipos','dependencia_id')) {
+                    // if (schema_has_column('inventarios_equipos', 'usuario_asignado_id')) {
+                    //     $equipo->usuario_asignado_id = $mov->usuario_asignado_id;
+                    // }
+                    // === ¡CORRECCIÓN AQUÍ! Aseguramos la actualización de dependencia_id ===
+                    if ($mov->dependencia_destino_id) { // Solo si el movimiento tiene una dependencia destino
                         $equipo->dependencia_id = $mov->dependencia_destino_id;
                     }
                     break;
 
                 case MovimientoTipo::Traslado:
-                    if ($mov->dependencia_destino_id && schema_has_column('inventarios_equipos','dependencia_id')) {
+                    // Traslado solo mueve dependencia
+                    // === ¡CORRECCIÓN AQUÍ! Aseguramos la actualización de dependencia_id ===
+                    if ($mov->dependencia_destino_id) { // Solo si el movimiento tiene una dependencia destino
                         $equipo->dependencia_id = $mov->dependencia_destino_id;
                     }
-                    break;
-
-                case MovimientoTipo::Prestamo:
-                    $equipo->estado = 'En Préstamo';
                     break;
 
                 case MovimientoTipo::Devolucion:
                     $equipo->estado = 'En Almacén';
-                    if ($mov->dependencia_destino_id && schema_has_column('inventarios_equipos','dependencia_id')) {
+                    if ($mov->dependencia_destino_id) {
                         $equipo->dependencia_id = $mov->dependencia_destino_id;
+                    } elseif ($mov->dependencia_origen_id) { // O si se devuelve al origen
+                        $equipo->dependencia_id = $mov->dependencia_origen_id;
                     }
-                    if (schema_has_column('inventarios_equipos', 'usuario_asignado_id')) {
-                        $equipo->usuario_asignado_id = null;
-                    }
+                    // if (schema_has_column('inventarios_equipos', 'usuario_asignado_id')) {
+                    //     $equipo->usuario_asignado_id = null;
+                    // }
                     break;
 
                 case MovimientoTipo::Garantia:

@@ -43,6 +43,15 @@ class MovimientoController extends Controller
             $query->whereDate('fecha_movimiento', '<=', $hasta);
         }
 
+        if ($equipoQ = trim($request->get('equipo_q'))) {
+            $query->whereHas('equipo', function ($q) use ($equipoQ) {
+                $q->where('numero_serie', 'like', "%{$equipoQ}%")
+                  ->orWhere('id_activo_fijo', 'like', "%{$equipoQ}%")
+                  ->orWhere('marca', 'like', "%{$equipoQ}%")
+                  ->orWhere('modelo', 'like', "%{$equipoQ}%");
+            });
+        }
+
         $movimientos = $query->paginate(20)->withQueryString();
 
         return view('admin.movimientos.index', [
@@ -50,6 +59,7 @@ class MovimientoController extends Controller
             'tipos' => MovimientoTipo::values(),
             'estados' => EstadoAprobacion::values(),
             'dependencias' => Dependencia::orderBy('nombre')->get(['id','nombre']),
+            'equipo_q' => $equipoQ,
         ]);
     }
 
@@ -58,7 +68,10 @@ class MovimientoController extends Controller
     {
         return view('admin.movimientos.create', [
             
-            'equipos' => Equipo::orderBy('id','desc')->limit(100)->get(['id','numero_serie','descripcion','dependencia_id']),
+            'equipos' => Equipo::with('tipo')
+                            ->orderBy('numero_serie')
+                            ->limit(100)
+                            ->get(['id','numero_serie','descripcion','dependencia_id','tipo_equipo_id']),
             'usuarios' => User::orderBy('name')->get(['id','name']),
             'dependencias' => Dependencia::orderBy('nombre')->get(['id','nombre']),
             'tipos' => MovimientoTipo::values(),
@@ -85,7 +98,11 @@ class MovimientoController extends Controller
         $this->authorize('update', $movimiento);
 
         return view('admin.movimientos.edit', [
-            'movimiento' => $movimiento->load(['equipo']),
+            'movimiento' => $movimiento->load(['equipo.tipo']),
+            'equipos' => Equipo::with('tipo')
+                               ->orderBy('numero_serie')
+                               ->limit(100)
+                               ->get(['id','numero_serie','descripcion','dependencia_id','tipo_equipo_id']),
             'usuarios' => User::orderBy('name')->get(['id','name']),
             'dependencias' => Dependencia::orderBy('nombre')->get(['id','nombre']),
             'tipos' => MovimientoTipo::values(),

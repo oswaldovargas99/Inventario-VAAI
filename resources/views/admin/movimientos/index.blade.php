@@ -14,10 +14,16 @@
     --}}
   <div class="py-6 max-w-7xl mx-auto sm:px-6 lg:px-8">
     <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-4">
-
       {{-- Formulario de Filtros y Botones --}}
       <form method="GET" class="mb-4">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
+          {{-- === ¡NUEVO CAMPO DE FILTRO POR EQUIPO! === --}}
+          <div class="lg:col-span-2"> {{-- Ocupa dos columnas para el campo de búsqueda de equipo --}}
+            <label for="equipo_q" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Buscar Equipo</label>
+            <input type="text" name="equipo_q" id="equipo_q" value="{{ $equipo_q ?? '' }}"
+              placeholder="Serie, activo, marca, modelo"
+              class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100">
+          </div>
           {{-- Tipo de movimiento --}}
           <div>
             <label for="tipo_movimiento" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Tipo</label>
