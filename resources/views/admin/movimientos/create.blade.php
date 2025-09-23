@@ -25,11 +25,9 @@
           <select name="equipo_id" class="w-full rounded border-gray-300 dark:bg-gray-700 dark:text-gray-100" required>
             <option value="">-- Selecciona --</option>
             @foreach($equipos as $e)
-              {{-- === ¡MODIFICACIÓN AQUÍ! Mostramos tipo y número de serie === --}}
               <option value="{{ $e->id }}" @selected(old('equipo_id') == $e->id)>
-                {{ $e->tipo?->nombre }} — {{ $e->numero_serie }}
+                {{ $e->tipo?->nombre }} — {{ $e->id_activo_fijo }}
               </option>
-              {{-- ========================================================== --}}
             @endforeach
           </select>
           @error('equipo_id') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror

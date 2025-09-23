@@ -43,6 +43,13 @@ class MovimientoController extends Controller
             $query->whereDate('fecha_movimiento', '<=', $hasta);
         }
 
+       if ($resguardanteId = $request->get('resguardante_id')) {
+            $query->where('usuario_asignado_id', $resguardanteId);
+        }
+
+
+
+
         if ($equipoQ = trim($request->get('equipo_q'))) {
             $query->whereHas('equipo', function ($q) use ($equipoQ) {
                 $q->where('numero_serie', 'like', "%{$equipoQ}%")
@@ -53,6 +60,7 @@ class MovimientoController extends Controller
         }
 
         $movimientos = $query->paginate(20)->withQueryString();
+        $usuariosParaFiltro = User::orderBy('name')->get(['id','name']);
 
         return view('admin.movimientos.index', [
             'movimientos' => $movimientos,
@@ -60,6 +68,7 @@ class MovimientoController extends Controller
             'estados' => EstadoAprobacion::values(),
             'dependencias' => Dependencia::orderBy('nombre')->get(['id','nombre']),
             'equipo_q' => $equipoQ,
+             'usuarios' => $usuariosParaFiltro,
         ]);
     }
 
@@ -71,7 +80,7 @@ class MovimientoController extends Controller
             'equipos' => Equipo::with('tipo')
                             ->orderBy('numero_serie')
                             ->limit(100)
-                            ->get(['id','numero_serie','descripcion','dependencia_id','tipo_equipo_id']),
+                            ->get(['id','numero_serie','descripcion','dependencia_id','tipo_equipo_id', 'id_activo_fijo']),
             'usuarios' => User::orderBy('name')->get(['id','name']),
             'dependencias' => Dependencia::orderBy('nombre')->get(['id','nombre']),
             'tipos' => MovimientoTipo::values(),

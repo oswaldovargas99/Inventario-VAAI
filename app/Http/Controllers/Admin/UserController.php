@@ -40,7 +40,7 @@ class UserController extends Controller
             $query->where('dependencia_id', $dependencia);
         }
 
-        $users = $query->orderBy('name')->paginate(3)->withQueryString();
+        $users = $query->orderBy('name')->paginate(10)->withQueryString();
 
         $roles        = ['Admin','Aprobador','Secretario','Usuario'];
         $dependencias = Dependencia::orderBy('nombre')->get(['id','siglas','nombre']);
