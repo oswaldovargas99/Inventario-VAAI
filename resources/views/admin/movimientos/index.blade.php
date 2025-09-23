@@ -140,6 +140,8 @@
                   @endif
                 </td>
                 <td class="p-2 flex flex-wrap gap-2 justify-end">
+                  <a href="{{ route('admin.movimientos.show', $m) }}"
+                    class="px-3 py-1 text-xs rounded-md border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">Ver</a>
                   @can('movimientos.edit')
                     @if($m->estado_aprobacion->value === 'Pendiente')
                       <a href="{{ route('admin.movimientos.edit',$m) }}"

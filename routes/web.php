@@ -70,7 +70,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // ===== Gestión de Movimientos (CONSOLIDADA) =====
         Route::resource('movimientos', MovimientoController::class)
-            ->except(['show'])
+            //->except(['show'])
             ->middleware([
                 'index'   => 'permission:movimientos.view',
                 'create'  => 'permission:movimientos.create',
@@ -78,6 +78,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 'edit'    => 'permission:movimientos.edit',
                 'update'  => 'permission:movimientos.edit',
                 'destroy' => 'permission:movimientos.delete',
+                //'show'    => 'permission:movimientos.show',
             ]);
 
         // Acciones de flujo de aprobación (específicas para Movimientos)

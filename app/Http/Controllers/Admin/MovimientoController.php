@@ -206,4 +206,19 @@ class MovimientoController extends Controller
 
         return back()->with('warning','Movimiento rechazado y registrado para auditoría.');
     }
+
+    
+    public function show(Movimiento $movimiento)
+    {
+        
+        $movimiento->load([
+            'equipo.tipo',
+            'responsable',
+            'usuarioAsignado',
+            'dependenciaOrigen',
+            'dependenciaDestino'
+        ]);
+
+        return view('admin.movimientos.show', compact('movimiento'));
+    }
 }
