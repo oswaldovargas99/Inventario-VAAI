@@ -66,7 +66,7 @@ class RolesAndPermissionsSeeder extends Seeder
             // Equipos: puede ver/crear/actualizar (no delete)
             'equipos.view',
             'equipos.create',
-            'equipos.update',
+            'equipos.edit',
             
             'movimientos.view',
             'movimientos.create',
@@ -82,7 +82,7 @@ class RolesAndPermissionsSeeder extends Seeder
             // Equipos: puede ver/crear/actualizar (no delete)
             'equipos.view',
             'equipos.create',
-            'equipos.update',
+            'equipos.edit',
 
             'movimientos.view',
             'movimientos.create',
@@ -102,7 +102,7 @@ class RolesAndPermissionsSeeder extends Seeder
             // Equipos: full
             'equipos.view',
             'equipos.create',
-            'equipos.update',
+            'equipos.edit',
             'equipos.delete',
 
             'movimientos.view',
