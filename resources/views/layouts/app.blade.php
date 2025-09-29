@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ config('app.name', 'Inventario UdG') }}</title>
 
         <meta name="color-scheme" content="light dark">
         <script>
@@ -29,13 +29,28 @@
     <body class="font-sans antialiased">
         <x-banner />
 
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            {{-- Puedes tener una barra de navegación superior aquí si es necesario --}}
-            {{-- @include('layouts.navigation-top') --}}
+        {{-- Añadimos x-data para controlar el estado de la barra lateral --}}
+        <div class="min-h-screen bg-gray-100 dark:bg-gray-900" x-data="{ sidebarOpen: false }">
 
-            <div class="flex"> {{-- Contenedor principal: Barra lateral + Contenido principal --}}
-                <nav class="flex-none w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4">
-                  <ul class="space-y-1 px-2">
+           
+            @livewire('navigation-menu', ['sidebarOpen' => 'sidebarOpen'])
+            
+            <div class="flex">
+                {{-- === 2. BARRA LATERAL === --}}
+                <nav class="flex-none w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4
+                            fixed inset-y-0 left-0 z-50 transform {{-- Posicionamiento fijo y transformaciones --}}
+                            md:relative md:translate-x-0 transition-transform duration-300 ease-in-out {{-- Animación --}}
+                            "
+                     x-bind:class="{ '-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }"> {{-- Lógica responsive --}}
+
+                  <div class="p-4 font-bold text-lg text-gray-900 dark:text-gray-100 flex justify-between items-center md:hidden"> {{-- Título en móvil --}}
+                    {{ config('app.name', 'Inventario UDG') }}
+                    <button @click="sidebarOpen = false" class="text-gray-500 hover:text-gray-700">
+                        <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                  </div>
+
+                  <ul class="space-y-1 px-2 mt-4 md:mt-0"> {{-- Ajusta el margen superior para evitar colisión con el título móvil --}}
                     @php $u = Auth::user(); @endphp
 
                     {{-- ===== Admin ===== --}}
@@ -56,7 +71,6 @@
                         </a>
                       </li>
                       
-                      {{-- ===== Dependencias (Añadido) ===== --}}
                       <li>
                         <a href="{{ route('admin.dependencias.index') }}"
                            class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700
@@ -83,8 +97,6 @@
                           </a>
                         </li>
                       @endcanany
-
-
 
                       <li>
                         <a href="{{ route('patrimonio.aprobaciones') }}"
@@ -189,27 +201,14 @@
                 </nav>
                 {{-- ========================================================================================== --}}
 
-                <div class="flex-1 flex flex-col"> {{-- Contenedor para la barra superior y el contenido principal --}}
-                    {{-- === BARRA SUPERIOR (TU HEADER) === --}}
+                <div class="flex-1 flex flex-col"> {{-- Contenedor para el título de la página y el contenido principal --}}
+                    {{-- El header de la página inyectado por el slot, si lo hubiera. --}}
                     <header class="bg-white dark:bg-gray-800 shadow">
-                        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-                            {{-- Contenido inyectado directamente por x-slot name="header" --}}
-                            {{-- Este slot ahora es el que debe tener el h2 y el botón, ya que este div tiene flex --}}
-                            {{ $header ?? '' }}
-
-                            {{-- Información del usuario y botón de salir --}}
-                            <div class="flex items-center space-x-4">
-                                <span class="text-gray-700 dark:text-gray-300">{{ Auth::user()->name }}</span>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="text-sm text-red-600 hover:underline">Salir</button>
-                                </form>
-                                {{-- Si tienes un toggle de tema oscuro, iría aquí --}}
-                            </div>
+                        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                            {{ $header ?? '' }} {{-- Esto ahora solo será el h2 del título --}}
                         </div>
                     </header>
-                    {{-- =================================== --}}
-
+                    {{-- Contenido principal de la página --}}
                     <main class="flex-1">
                         <div class="py-6">
                             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -217,17 +216,14 @@
                             </div>
                         </div>
                     </main>
-                    {{-- ===================================== --}}
+                </div>
 
-                </div> {{-- Fin del div flex-1 flex flex-col --}}
-
-            </div> {{-- Fin del div flex (principal) --}}
-        </div> {{-- Fin del min-h-screen --}}
+            </div>
+        </div>
 
         @stack('modals')
         @livewireScripts
         @livewireNavigateScripts
-        {{-- Mensaje flash global, como ya lo movimos aquí --}}
         @if(session('success'))
             <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
                 class="fixed top-4 right-4 z-50 px-4 py-2 bg-green-600 text-white rounded-lg shadow-lg">

@@ -77,10 +77,10 @@ class MovimientoController extends Controller
     {
         return view('admin.movimientos.create', [
             
-            'equipos' => Equipo::with('tipo')
+            /*'equipos' => Equipo::with('tipo')
                             ->orderBy('numero_serie')
                             ->limit(100)
-                            ->get(['id','numero_serie','descripcion','dependencia_id','tipo_equipo_id', 'id_activo_fijo']),
+                            ->get(['id','numero_serie','descripcion','dependencia_id','tipo_equipo_id', 'id_activo_fijo']),*/
             'usuarios' => User::orderBy('name')->get(['id','name']),
             'dependencias' => Dependencia::orderBy('nombre')->get(['id','nombre']),
             'tipos' => MovimientoTipo::values(),
@@ -108,10 +108,10 @@ class MovimientoController extends Controller
 
         return view('admin.movimientos.edit', [
             'movimiento' => $movimiento->load(['equipo.tipo']),
-            'equipos' => Equipo::with('tipo')
+         /*   'equipos' => Equipo::with('tipo')
                                ->orderBy('numero_serie')
                                ->limit(100)
-                               ->get(['id','numero_serie','descripcion','dependencia_id','tipo_equipo_id']),
+                               ->get(['id','numero_serie','descripcion','dependencia_id','tipo_equipo_id']),*/
             'usuarios' => User::orderBy('name')->get(['id','name']),
             'dependencias' => Dependencia::orderBy('nombre')->get(['id','nombre']),
             'tipos' => MovimientoTipo::values(),

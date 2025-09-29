@@ -20,17 +20,14 @@
       <form method="POST" action="{{ route('admin.movimientos.store') }}" class="grid gap-4">
         @csrf
 
-        <div>
-          <label class="block text-sm mb-1">Equipo</label>
-          <select name="equipo_id" class="w-full rounded border-gray-300 dark:bg-gray-700 dark:text-gray-100" required>
-            <option value="">-- Selecciona --</option>
-            @foreach($equipos as $e)
-              <option value="{{ $e->id }}" @selected(old('equipo_id') == $e->id)>
-                {{ $e->tipo?->nombre }} — {{ $e->id_activo_fijo }}
-              </option>
-            @endforeach
-          </select>
-          @error('equipo_id') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
+       <div>
+          @livewire('select-equipo', [
+              'name' => 'equipo_id',
+              'label' => 'Equipo',
+              'placeholder' => 'Buscar por serie, activo, marca o modelo',
+              'required' => true,
+              'initialEquipoId' => old('equipo_id', $movimiento->equipo_id ?? null),
+          ])
         </div>
 
         <div>
