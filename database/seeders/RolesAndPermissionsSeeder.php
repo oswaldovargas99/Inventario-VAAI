@@ -116,7 +116,7 @@ class RolesAndPermissionsSeeder extends Seeder
         if (!User::where('email', 'admin@udg.com')->exists()) {
             $adminUser = User::create([
                 'name'     => 'Administrador',
-                'email'    => 'admin@udg.com',
+                'email'    => 'admin@udg.mx',
                 'password' => bcrypt('julioC123'),
             ]);
             $adminUser->assignRole('Admin');

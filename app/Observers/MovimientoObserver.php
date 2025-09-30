@@ -2,6 +2,9 @@
 
 namespace App\Observers;
 
+
+use App\Enums\EstadoAprobacion;
+use App\Enums\MovimientoTipo;
 use App\Models\Inventarios\Movimiento;
 use Illuminate\Support\Facades\DB;
 
@@ -12,8 +15,8 @@ class MovimientoObserver
      */
     public function saved(Movimiento $mov): void
     {
-        // Asegúrate de que este texto coincida con tu estado de aprobación final
-        if ($mov->estado_aprobacion !== 'Aprobado_Secretaria') {
+        // 2. Comparamos el Enum con el Enum, no con texto.
+        if ($mov->estado_aprobacion !== EstadoAprobacion::AprobadoSecretaria) {
             return;
         }
 
@@ -21,30 +24,39 @@ class MovimientoObserver
             $equipo = $mov->equipo()->lockForUpdate()->first();
             if (!$equipo) return;
 
-            // === ¡CÓDIGO CORREGIDO CON LOS ACENTOS CORRECTOS! ===
+            // 3. Comparamos el tipo de movimiento usando los Enums.
             switch ($mov->tipo_movimiento) {
 
-                case 'Alta':
+                case MovimientoTipo::Alta:
                     $equipo->estado = 'En Almacén';
                     break;
 
-                case 'Asignación':
-                case 'Reasignación':
-                case 'Préstamo':
-                    $equipo->estado = ($mov->tipo_movimiento === 'Préstamo') ? 'En Préstamo' : 'Asignado';
-                    $equipo->usuario_asignado_id = $mov->usuario_asignado_id; // Se asigna el usuario
+                case MovimientoTipo::Asignacion:
+                //case MovimientoTipo::Reasignacion:
+                    $equipo->estado = 'Asignado';
+                    $equipo->usuario_asignado_id = $mov->usuario_asignado_id;
                     if ($mov->dependencia_destino_id) {
                         $equipo->dependencia_id = $mov->dependencia_destino_id;
                     }
                     break;
 
-                case 'Traslado':
+                case MovimientoTipo::Prestamo:
+                    $equipo->estado = 'En Préstamo';
+                    $equipo->usuario_asignado_id = $mov->usuario_asignado_id;
+                    if ($mov->dependencia_destino_id) {
+                        $equipo->dependencia_id = $mov->dependencia_destino_id;
+                    }
+                    break;
+
+                case MovimientoTipo::Traslado:
+                    $equipo->estado = 'Baja';
+                    $equipo->usuario_asignado_id = null;
                     if ($mov->dependencia_destino_id) {
                         $equipo->dependencia_id = $mov->dependencia_destino_id;
                     }
                     break;
                 
-                case 'Devolución':
+                case MovimientoTipo::Devolucion:
                     $equipo->estado = 'En Almacén';
                     $equipo->usuario_asignado_id = null;
                     if ($mov->dependencia_destino_id) {
@@ -54,12 +66,12 @@ class MovimientoObserver
                     }
                     break;
 
-                case 'Baja':
+                case MovimientoTipo::Baja:
                     $equipo->estado = 'Baja';
                     $equipo->usuario_asignado_id = null;
                     break;
 
-                case 'Garantía':
+                case MovimientoTipo::Garantia:
                     $equipo->estado = 'En Mantenimiento';
                     $equipo->usuario_asignado_id = null;
                     break;
