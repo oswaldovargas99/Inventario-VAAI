@@ -33,8 +33,10 @@ class SelectEquipo extends Component
 
     public function updatedSearch()
     {
-        $this->selectedEquipoId = null; // Limpiar el ID seleccionado si el usuario empieza a escribir de nuevo
-        $this->selectedEquipoText = ''; // Limpiar el texto seleccionado
+        if ($this->search !== $this->selectedEquipoText) {
+            $this->selectedEquipoId = null;
+            $this->selectedEquipoText = '';
+        }
         
         if (strlen($this->search) < 2) {
             $this->equipos = [];
@@ -57,10 +59,10 @@ class SelectEquipo extends Component
     {
         $equipo = Equipo::with('tipo')->find($equipoId);
         if ($equipo) {
-            $this->selectedEquipoId = $equipo->id; // Guarda el ID real
-            $this->selectedEquipoText = $equipo->tipo?->nombre . ' — ' . $equipo->numero_serie; // Guarda el texto para mostrar
-            $this->search = $this->selectedEquipoText; // Rellenar el input de búsqueda con el texto del seleccionado
-            $this->equipos = []; // Ocultar resultados
+            $this->selectedEquipoId = $equipo->id;
+            $this->selectedEquipoText = $equipo->tipo?->nombre . ' — ' . $equipo->numero_serie;
+            $this->search = $this->selectedEquipoText;
+            $this->equipos = [];
         }
     }
 

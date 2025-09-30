@@ -121,6 +121,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // ===== Rutas para Usuario General (solo "Mi Inventario") =====
     Route::middleware(['role:Usuario'])->group(function () {
-        Route::view('/mi-inventario', 'usuarios.mi_inventario')->name('usuarios.dashboard');
+        // Apuntamos al nuevo método 'miInventario' en el DashboardController
+        Route::get('/mi-inventario', [DashboardController::class, 'miInventario'])->name('usuarios.dashboard');
     });
 });

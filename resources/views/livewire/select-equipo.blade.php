@@ -20,7 +20,7 @@
     >
 
     {{-- Este es el campo oculto que enviará el ID seleccionado al formulario --}}
-    <input type="hidden" name="{{ $name }}" wire:model="selectedEquipoId">
+    <input type="hidden" name="{{ $name }}" value="{{ $selectedEquipoId }}">
 
     {{-- Contenedor del Dropdown --}}
     {{-- La visibilidad ahora es controlada por una única y clara condición en x-show --}}
