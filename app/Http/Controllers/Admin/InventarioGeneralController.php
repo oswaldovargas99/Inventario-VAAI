@@ -34,7 +34,7 @@ class InventarioGeneralController extends Controller
             ->when($tip, fn($qq) => $qq->where('tipo_equipo_id', $tip))
             ->when($est, fn($qq) => $qq->where('estado', $est))
             ->latest('id')
-            ->paginate(15)
+            ->paginate(10)
             ->withQueryString();
 
         // Lógica para obtener los estados, dependencias y tipos (idéntica a EquipoController@index)

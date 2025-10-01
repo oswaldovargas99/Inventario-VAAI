@@ -24,7 +24,7 @@ class DependenciaController extends Controller
             )
         )
         ->orderBy('nombre')
-        ->paginate(15)
+        ->paginate(10)
         ->appends($request->all());
 
         return view('admin.dependencias.index', compact('deps','q'));
