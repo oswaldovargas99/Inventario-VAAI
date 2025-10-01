@@ -29,28 +29,28 @@
     <body class="font-sans antialiased">
         <x-banner />
 
-        {{-- Añadimos x-data para controlar el estado de la barra lateral --}}
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900" x-data="{ sidebarOpen: false }">
 
-           
             @livewire('navigation-menu', ['sidebarOpen' => 'sidebarOpen'])
             
-            <div class="flex">
-                {{-- === 2. BARRA LATERAL === --}}
-                <nav class="flex-none w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4
-                            fixed inset-y-0 left-0 z-50 transform {{-- Posicionamiento fijo y transformaciones --}}
-                            md:relative md:translate-x-0 transition-transform duration-300 ease-in-out {{-- Animación --}}
+            {{-- ¡CAMBIO AQUÍ! 1. Forzamos la altura de este contenedor --}}
+            <div class="flex h-[calc(100vh-4rem)]">
+                
+                {{-- ¡CAMBIO AQUÍ! 2. Añadimos scroll a la barra lateral por si su contenido crece --}}
+                <nav class="flex-none w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4 overflow-y-auto
+                            fixed inset-y-0 left-0 z-50 transform
+                            md:relative md:translate-x-0 transition-transform duration-300 ease-in-out
                             "
-                     x-bind:class="{ '-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }"> {{-- Lógica responsive --}}
+                     x-bind:class="{ '-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }">
 
-                  <div class="p-4 font-bold text-lg text-gray-900 dark:text-gray-100 flex justify-between items-center md:hidden"> {{-- Título en móvil --}}
+                  <div class="p-4 font-bold text-lg text-gray-900 dark:text-gray-100 flex justify-between items-center md:hidden">
                     {{ config('app.name', 'Inventario UDG') }}
                     <button @click="sidebarOpen = false" class="text-gray-500 hover:text-gray-700">
                         <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                   </div>
 
-                  <ul class="space-y-1 px-2 mt-4 md:mt-0"> {{-- Ajusta el margen superior para evitar colisión con el título móvil --}}
+                  <ul class="space-y-1 px-2 mt-4 md:mt-0">
                     @php $u = Auth::user(); @endphp
 
                     {{-- ===== Admin ===== --}}
@@ -199,16 +199,17 @@
                     @endrole
                   </ul>
                 </nav>
-                {{-- ========================================================================================== --}}
 
-                <div class="flex-1 flex flex-col"> {{-- Contenedor para el título de la página y el contenido principal --}}
-                    {{-- El header de la página inyectado por el slot, si lo hubiera. --}}
-                    <header class="bg-white dark:bg-gray-800 shadow">
+                {{-- ¡CAMBIO AQUÍ! 3. Hacemos que el área de contenido principal tenga su propio scroll --}}
+                <div class="flex-1 flex flex-col overflow-y-auto">
+                    
+                    {{-- ¡CAMBIO AQUÍ! 4. Hacemos que el header se quede "pegado" arriba al hacer scroll --}}
+                    <header class="bg-white dark:bg-gray-800 shadow sticky top-0 z-10">
                         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                            {{ $header ?? '' }} {{-- Esto ahora solo será el h2 del título --}}
+                            {{ $header ?? '' }}
                         </div>
                     </header>
-                    {{-- Contenido principal de la página --}}
+                    
                     <main class="flex-1">
                         <div class="py-6">
                             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -217,7 +218,6 @@
                         </div>
                     </main>
                 </div>
-
             </div>
         </div>
 
