@@ -6,7 +6,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DependenciaController;
 use App\Models\User;
 use App\Http\Controllers\Admin\EquipoController;
-use App\Http\Controllers\Admin\InventarioGeneralController; // Este controlador ahora solo redirige
+use App\Http\Controllers\Admin\InventarioGeneralController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MovimientoController;
 
@@ -22,7 +22,7 @@ use App\Http\Controllers\Admin\MovimientoController;
 */
 
 // Ruta de inicio: redirige a '/inicio' si está autenticado, de lo contrario muestra la vista 'welcome'
-Route::get('/', fn () => Auth::check() ? redirect()->route('inicio') : view('welcome'))->name('home');
+Route::get('/', fn () => Auth::check() ? redirect()->route('inicio') : view('auth/login'))->name('home');
 
 // Grupo de rutas que requieren autenticación y verificación de email
 Route::middleware(['auth', 'verified'])->group(function () {
